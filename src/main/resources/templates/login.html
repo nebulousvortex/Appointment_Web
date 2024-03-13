@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Авторизация</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Авторизация</h2>
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <div th:each="error : ${errorMessage}" th:text="${error}"></div>
+    </div>
+    <form id="loginForm" th:object="${user}" th:action="@{/auth/login}" method="post" data-remote="true">
+        <div class="form-group">
+            <label for="login">Номер полиса:</label>
+            <input type="text" class="form-control" id="login" placeholder="Введите номер полиса" name="login">
+        </div>
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="text" class="form-control" id="password" placeholder="Введите пароль" name="password">
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
+</body>
+</html>

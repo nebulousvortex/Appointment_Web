@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Регистрация</h2>
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <div th:each="error : ${errorMessage}" th:text="${error}"></div>
+    </div>
+    <form id="registrationForm" th:object="${user}" th:action="@{/auth/registration}" method="post" data-remote="true">
+        <div class="form-group">
+            <label for="firstName">Имя:</label>
+            <input type="text" class="form-control" id="firstName" placeholder="Введите имя" name="firstName">
+        </div>
+        <div class="form-group">
+            <label for="lastName">Фамилия:</label>
+            <input type="text" class="form-control" id="lastName" placeholder="Введите фамилию" name="lastName">
+        </div>
+        <div class="form-group">
+            <label for="surName">Отчество:</label>
+            <input type="text" class="form-control" id="surName" placeholder="Введите отчество" name="surName">
+        </div>
+        <div class="form-group">
+            <label for="username">Номер полиса:</label>
+            <input type="text" class="form-control" id="username" placeholder="Введите номер полиса" name="username">
+        </div>
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" class="form-control" id="password" placeholder="Введите пароль" name="password">
+        </div>
+        <div class="form-group">
+            <label for="passwordConfirm">Подтверждение пароля:</label>
+            <input type="password" class="form-control" id="passwordConfirm" placeholder="Подтвердите пароль" name="passwordConfirm">
+        </div>
+        <div class="form-group">
+            <label for="mail">Почтовый адрес:</label>
+            <input type="email" class="form-control" id="mail" placeholder="Введите почтовый адрес" name="mail">
+        </div>
+        <div class="form-group">
+            <label for="phone">Номер телефона:</label>
+            <input type="text" class="form-control" id="phone" placeholder="Введите номер телефона" name="phone">
+        </div>
+        <div class="form-group">
+            <label for="dateOfBirth">Дата рождения:</label>
+            <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+</body>
+</html>

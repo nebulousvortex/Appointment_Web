@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Шапка</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/header.css">
+</head>
+<body>
+<div th:fragment="header">
+    <div class="container">
+        <span class="header-content d-flex justify-content-between">
+            <span class="navbar-text">
+                <form th:action="@{/doctor/getAll}" method="get" class="d-inline">
+                    <button type="submit" class="btn btn-link" th:text="Главная"></button>
+                </form>
+                <form th:if="${session.role.name == 'ROLE_DOCTOR'}"
+                      th:action="@{/doctor/__${user.username}__/patients}" method="get" class="d-inline">
+                    <button type="submit" class="btn btn-link" th:text="Пациенты"></button>
+                </form>
+            </span>
+            <div class="text-right">
+                <form th:action="@{/user/account}" method="get" class="d-inline">
+                    <button type="submit" class="btn btn-link" th:text="${user.username}"></button>
+                </form>
+                <span class="navbar-text">
+                    <a class="btn btn-outline-info action-button" role="button" th:href="@{/auth/logout}">Выйти</a>
+                </span>
+            </div>
+        </span>
+    </div>
+</div>
+</body>
+</html>
