@@ -1,10 +1,6 @@
 package ru.sber.appointment.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.time.LocalTime;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)

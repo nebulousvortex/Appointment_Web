@@ -2,7 +2,6 @@ package ru.sber.appointment.model;
 
 public class JwtResponse {
 
-    private final String type = "Bearer";
     private String accessToken;
     private String refreshToken;
     private User user;
@@ -16,7 +15,7 @@ public class JwtResponse {
     }
 
     public String getType() {
-        return type;
+        return "Bearer";
     }
 
     public void setUser(User user) {
