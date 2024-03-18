@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список докторов</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="includes/header :: header(user=${user})"></div>
+<div class="container">
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <div th:each="error : ${errorMessage}" th:text="${error}"></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="sticky-top">
+                <h2>Фильтр</h2>
+                <form method="get">
+                    <div class="form-group">
+                        <label for="firstName">Имя:</label>
+                        <input type="text" class="form-control" id="firstName" name="firstName">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Фамилия:</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName">
+                    </div>
+                    <div class="form-group">
+                        <label for="spec">Специализация:</label>
+                        <input type="text" class="form-control" id="spec" name="spec">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Найти</button>
+                </form>
+            </div>
+        </div>
+        <div>
+            <h2>Список докторов</h2>
+            <div th:each="doctor : ${doctors}">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${doctor.user.lastName + ' ' + doctor.user.firstName + ' ' + doctor.user.surName}"></h5>
+                        <p class="card-text" th:text="${doctor.specialization}"></p>
+                        <a th:href="@{/ticket/{doctorId}(doctorId=${doctor.id})}" class="btn btn-primary">Tickets</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
