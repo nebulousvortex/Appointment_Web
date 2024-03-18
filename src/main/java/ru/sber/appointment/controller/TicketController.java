@@ -3,67 +3,71 @@ package ru.sber.appointment.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import ru.sber.appointment.model.Ticket;
 import ru.sber.appointment.model.User;
+import ru.sber.appointment.service.ResponseServiceImpl;
 
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/ticket")
 public class TicketController {
+    @Autowired
+    ResponseServiceImpl responseService;
     private String authToken;
-    private ResponseEntity<JsonNode> response;
+    private HttpEntity<String> response;
     private User user;
 
-    @GetMapping("/{doctorId}")
-    public String getDoctorTickets(@PathVariable Long doctorId, Model model, HttpSession session) throws JsonProcessingException {
-        final String url = "http://localhost:8080/api/v1/ticket/get/" + doctorId + "/tickets";
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        if(session.getAttribute("accessToken") != null) {
-            authToken = session.getAttribute("accessToken").toString();
-            user = (User) session.getAttribute("user");
-        } else {
+    @GetMapping("/doctor/{doctorId}")
+    public String getTicketList(@PathVariable Long doctorId, Model model, HttpSession session) throws JsonProcessingException {
+        final String url = "http://localhost:8080/api/v1/ticket/get/tickets/" + doctorId;
+        if (responseService.getUnauthorized(session)) {
             return "redirect:/auth/login";
         }
-        headers.set("Authorization", "Bearer " + authToken);
-        HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        response = restTemplate.exchange(url, HttpMethod.GET, entity, JsonNode.class);
-        JsonNode json = response.getBody();
+
+        user = (User) session.getAttribute("user");
+        response = responseService.getResponse(session, url, HttpMethod.GET, null);
+
+        String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode json = objectMapper.readTree(responseBody);
         List<Ticket> ticketsList = Arrays.asList(objectMapper.treeToValue(json, Ticket[].class));
+
         model.addAttribute("doctorId", doctorId);
         model.addAttribute("tickets", ticketsList);
         model.addAttribute("user", user);
-        return "doctorTickets";
+        return "ticketList";
     }
 
-    @PostMapping("/{doctorId}")
-    public String appointUser(@RequestParam("ticketId") Long ticketId, Model model, HttpSession session) throws JsonProcessingException {
-        final String url = "http://localhost:8080/api/v1/ticket/appointUser";
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        String authToken = session.getAttribute("accessToken").toString();
-        headers.set("Authorization", "Bearer " + authToken);
+    @PostMapping("/doctor/{doctorId}")
+    public String appoint(@RequestParam("ticketId") Long ticketId, Model model, HttpSession session) throws JsonProcessingException {
+        final String url = "http://localhost:8080/api/v1/ticket/put/tickets";
+        if (responseService.getUnauthorized(session)) {
+            return "redirect:/auth/login";
+        }
+
         user = (User) session.getAttribute("user");
-        String jsonString = "{"
-                + "\"id\":" + ticketId + ","
-                + "\"user\":{"
-                + "\"username\":\"" + user.getUsername() + "\""
-                + "}"
-                + "}";
-        HttpEntity<String> entity = new HttpEntity<>(jsonString, headers);
-        ResponseEntity<JsonNode> response = restTemplate.exchange(url, HttpMethod.PUT, entity, JsonNode.class);
-        if(response.getStatusCode() == HttpStatus.OK) {
-            return "redirect:/doctor/getAll";
+
+        Map<String, Object> requestBody = new LinkedHashMap<>();
+        requestBody.put("id", ticketId);
+        Map<String, Object> userMap = new LinkedHashMap<>();
+        userMap.put("username", user.getUsername());
+        requestBody.put("user", userMap);
+
+        response = responseService.getResponse(session, url, HttpMethod.PUT, requestBody);
+
+        if(response.getBody() == null) {
+            return "redirect:/doctor/list";
         } else {
             return "error";
         }
