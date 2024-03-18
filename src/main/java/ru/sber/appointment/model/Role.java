@@ -3,10 +3,11 @@ package ru.sber.appointment.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Role {
+public class Role implements Serializable {
     private Long id;
     private String name;
     private Set<User> users;

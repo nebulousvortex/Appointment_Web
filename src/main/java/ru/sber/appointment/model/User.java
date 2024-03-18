@@ -3,11 +3,11 @@ package ru.sber.appointment.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User  {
+public class User implements Serializable{
 
     private Long id;
     private String firstName;

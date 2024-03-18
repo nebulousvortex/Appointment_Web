@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="container">
-    <h2>Авторизация</h2>
+    <h2>Авторизация | <a th:href="@{/auth/registration}">Регистрация</a></h2>
     <div th:if="${errorMessage}" class="alert alert-danger">
         <div th:each="error : ${errorMessage}" th:text="${error}"></div>
     </div>

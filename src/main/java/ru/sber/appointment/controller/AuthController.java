@@ -21,11 +21,11 @@ import java.util.List;
 public class AuthController {
 
     @GetMapping("/registration")
-    public String renderRegistration(){
+    public String register(){
         return ("registration");
     }
     @PostMapping("/registration")
-    public String registerUser(@ModelAttribute User user, Model model){
+    public String register(@ModelAttribute User user, Model model){
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/api/v1/registration";
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, user, String.class);
@@ -38,22 +38,21 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String renderLogin(){
+    public String login(){
         return ("login");
     }
     @PostMapping("/login")
-    public String loginUser(@ModelAttribute JwtRequest jwtRequest, Model model, HttpSession session){
+    public String login(@ModelAttribute JwtRequest jwtRequest, Model model, HttpSession session){
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8080/api/v1/auth/login";
         ResponseEntity<JwtResponse> responseEntity = restTemplate.postForEntity(url, jwtRequest, JwtResponse.class);
         JwtResponse jwtResponse = responseEntity.getBody();
         if (jwtResponse != null) {
-            System.out.println( jwtResponse.getUser().getAuthorities());
             session.setAttribute("accessToken", jwtResponse.getAccessToken());
             session.setAttribute("username", jwtRequest.getLogin());
             session.setAttribute("user", jwtResponse.getUser());
             session.setAttribute("role", jwtResponse.getUser().getRoles().iterator().next());
-            return "redirect:/doctor/getAll";
+            return "redirect:/doctor/list";
         }
         else {
             model.addAttribute("errorMessage", "Неверные логин или пароль");

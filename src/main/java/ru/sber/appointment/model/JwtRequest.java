@@ -1,6 +1,8 @@
 package ru.sber.appointment.model;
 
-public class JwtRequest {
+import java.io.Serializable;
+
+public class JwtRequest implements Serializable {
 
     private String login;
     private String password;

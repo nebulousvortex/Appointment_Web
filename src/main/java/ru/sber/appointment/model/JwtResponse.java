@@ -1,6 +1,8 @@
 package ru.sber.appointment.model;
 
-public class JwtResponse {
+import java.io.Serializable;
+
+public class JwtResponse implements Serializable {
 
     private String accessToken;
     private String refreshToken;

@@ -2,7 +2,6 @@ package ru.sber.appointment.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
