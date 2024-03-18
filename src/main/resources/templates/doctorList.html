@@ -40,7 +40,7 @@
                     <div class="card-body">
                         <h5 class="card-title" th:text="${doctor.user.lastName + ' ' + doctor.user.firstName + ' ' + doctor.user.surName}"></h5>
                         <p class="card-text" th:text="${doctor.specialization}"></p>
-                        <a th:href="@{/ticket/{doctorId}(doctorId=${doctor.id})}" class="btn btn-primary">Tickets</a>
+                        <a th:href="@{/ticket/doctor/{doctorId}(doctorId=${doctor.id})}" class="btn btn-primary">Tickets</a>
                     </div>
                 </div>
             </div>

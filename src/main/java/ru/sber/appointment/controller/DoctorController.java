@@ -58,9 +58,6 @@ public class DoctorController {
             return "redirect:/auth/login";
         }
         user = (User) session.getAttribute("user");
-        System.out.println(session.getAttribute("user"));
-        System.out.println(session.getAttribute("accessToken"));
-        System.out.println(session);
         final String url = "http://localhost:8080/api/v1/ticket/get/tickets/doctor/" + user.getUsername();
         response = responseService.getResponse(session, url, HttpMethod.GET, null);
         String responseBody = response.getBody();

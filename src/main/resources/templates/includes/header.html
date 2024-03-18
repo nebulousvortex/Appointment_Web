@@ -12,7 +12,7 @@
     <div class="container">
         <span class="header-content d-flex justify-content-between">
             <span class="navbar-text">
-                <form th:action="@{/doctor/getAll}" method="get" class="d-inline">
+                <form th:action="@{/doctor/list}" method="get" class="d-inline">
                     <button type="submit" class="btn btn-link" th:text="Главная"></button>
                 </form>
                 <form th:if="${session.role.name == 'ROLE_DOCTOR'}"
