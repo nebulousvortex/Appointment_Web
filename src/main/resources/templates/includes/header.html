@@ -25,6 +25,7 @@
                 </form>
             </span>
             <div class="text-right">
+                <input type="color" id="colorPicker" value="#b2f0e9" oninput="document.body.style.backgroundColor = this.value;">
                 <form th:action="@{/user/account}" method="get" class="d-inline">
                     <button type="submit" class="btn btn-link" th:text="${user.username}"></button>
                 </form>
@@ -35,6 +36,20 @@
         </span>
     </div>
     <hr class="hr" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const colorPicker = document.getElementById("colorPicker");
+            const savedColor = localStorage.getItem("backgroundColor");
+
+            colorPicker.value = savedColor || "#ffffff";
+            document.body.style.backgroundColor = savedColor || document.getElementById("colorPicker").value;
+
+            colorPicker.addEventListener("input", function() {
+                document.body.style.backgroundColor = colorPicker.value;
+                localStorage.setItem("backgroundColor", colorPicker.value);
+            });
+        });
+    </script>
 </div>
 </body>
 </html>
