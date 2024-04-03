@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
@@ -28,9 +29,12 @@ public class TicketController {
     private HttpEntity<String> response;
     private User user;
 
+    @Value("${url.rest.ticket.get}") private String getUrl;
+    @Value("${url.rest.ticket.appoint}") private String appointUrl;
+
     @GetMapping("/doctor/{doctorId}")
     public String getTicketList(@PathVariable Long doctorId, Model model, HttpSession session) throws JsonProcessingException {
-        final String url = "http://localhost:8080/api/v1/ticket/get/tickets/" + doctorId;
+        final String url = getUrl + doctorId;
         if (responseService.getUnauthorized(session)) {
             return "redirect:/auth/login";
         }
@@ -51,7 +55,7 @@ public class TicketController {
 
     @PostMapping("/doctor/{doctorId}")
     public String appoint(@RequestParam("ticketId") Long ticketId, Model model, HttpSession session) throws JsonProcessingException {
-        final String url = "http://localhost:8080/api/v1/ticket/put/tickets";
+        final String url = appointUrl;
         if (responseService.getUnauthorized(session)) {
             return "redirect:/auth/login";
         }

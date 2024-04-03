@@ -1,3 +1,18 @@
 server:
   address: 0.0.0.0
   port: 8081
+
+url:
+  rest:
+    admin_panel: http://localhost:8080/api/v1/admin/
+    auth:
+      login: http://localhost:8080/api/v1/auth/login
+      registration: http://localhost:8080/api/v1/registration
+    doctor:
+      get: http://localhost:8080/api/v1/doctor/get/doctors
+      patients: http://localhost:8080/api/v1/ticket/get/tickets/doctor/
+    ticket:
+      get: http://localhost:8080/api/v1/ticket/get/tickets/
+      appoint: http://localhost:8080/api/v1/ticket/put/tickets
+    user:
+      get: http://localhost:8080/api/v1/ticket/get/tickets/user/

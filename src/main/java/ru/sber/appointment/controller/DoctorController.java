@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
@@ -29,19 +30,21 @@ public class DoctorController {
     private HttpEntity<String> response;
     private User user;
 
+    @Value("${url.rest.doctor.get}") private String getUrl;
+    @Value("${url.rest.doctor.patients}") private String patientsUrl;
+
     @GetMapping("/list")
     public String getDoctorList(@RequestParam(name = "firstName", required = false) String firstName,
                                 @RequestParam(name = "lastName", required = false) String lastName,
                                 @RequestParam(name = "spec", required = false) String spec,
                                 Model model, HttpSession session) throws JsonProcessingException {
 
-        final String url = "http://localhost:8080/api/v1/doctor/get/doctors";
         if (responseService.getUnauthorized(session)) {
             return "redirect:/auth/login";
         }
         user = (User) session.getAttribute("user");
 
-        response = responseService.getResponse(session, url, HttpMethod.POST, responseService.generateDoctor(firstName, lastName, spec));
+        response = responseService.getResponse(session, getUrl, HttpMethod.POST, responseService.generateDoctor(firstName, lastName, spec));
         String responseBody = response.getBody();
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -58,7 +61,7 @@ public class DoctorController {
             return "redirect:/auth/login";
         }
         user = (User) session.getAttribute("user");
-        final String url = "http://localhost:8080/api/v1/ticket/get/tickets/doctor/" + user.getUsername();
+        final String url = patientsUrl + user.getUsername();
         response = responseService.getResponse(session, url, HttpMethod.GET, null);
         String responseBody = response.getBody();
 

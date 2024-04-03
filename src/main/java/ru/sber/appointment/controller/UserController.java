@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ public class UserController {
     private String authToken;
     private HttpEntity<String> response;
     private User user;
+    @Value("${url.rest.user.get}") private String getUrl;
 
     @GetMapping("/account")
     public String getAccount(Model model, HttpSession session) throws JsonProcessingException {
@@ -36,7 +38,7 @@ public class UserController {
         }
         user = (User) session.getAttribute("user");
 
-        final String url = "http://localhost:8080/api/v1/ticket/get/tickets/user/" + user.getUsername();
+        final String url = getUrl + user.getUsername();
         response = responseService.getResponse(session, url, HttpMethod.GET, null);
         String responseBody = response.getBody();
 

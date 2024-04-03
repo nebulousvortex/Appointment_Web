@@ -2,6 +2,7 @@ package ru.sber.appointment.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +22,8 @@ public class AdminController {
     private User user;
     private HttpEntity<String> response;
 
+    @Value("${url.rest.admin_panel}") private String adminUrl;
+
     @GetMapping("/{username}")
     public String getAccount(Model model, HttpSession session) throws JsonProcessingException {
         if (responseService.getUnauthorized(session)) {
@@ -28,9 +31,8 @@ public class AdminController {
         }
 
         user = (User) session.getAttribute("user");
-        final String url = "http://localhost:8080/api/v1/admin/" + user.getUsername() + "/get";
+        final String url = adminUrl + user.getUsername() + "/get";
         response = responseService.getResponse(session, url, HttpMethod.GET, null);
-
         if (response.getBody() != null) {
             model.addAttribute("user", user);
             return "adminAccount";
@@ -47,13 +49,15 @@ public class AdminController {
             return "redirect:/auth/login";
         }
         user = (User) session.getAttribute("user");
-        final String url = "http://localhost:8080/api/v1/admin/" + user.getUsername() + "/delete/user";
+        final String url = adminUrl + user.getUsername() + "/delete/user";
         User userToDelete = new User();
         userToDelete.setId(id);
         response = responseService.getResponse(session, url, HttpMethod.DELETE, userToDelete);
 
         if (response.getBody() != null) {
             model.addAttribute("user", user);
+            List<String> errorsList = Arrays.asList(response.getBody().substring(1, response.getBody().length()-1).split(","));
+            model.addAttribute("errorMessage", errorsList);
             return "adminAccount";
         } else {
             model.addAttribute("user", user);
@@ -69,13 +73,15 @@ public class AdminController {
         }
 
         user = (User) session.getAttribute("user");
-        final String url = "http://localhost:8080/api/v1/admin/" + user.getUsername() + "/delete/doctor";
+        final String url = adminUrl + user.getUsername() + "/delete/doctor";
         Doctor doctorToDelete = new Doctor();
         doctorToDelete.setId(id);
         response = responseService.getResponse(session, url, HttpMethod.DELETE, doctorToDelete);
 
         if (response.getBody() != null) {
             model.addAttribute("user", user);
+            List<String> errorsList = Arrays.asList(response.getBody().substring(1, response.getBody().length()-1).split(","));
+            model.addAttribute("errorMessage", errorsList);
             return "adminAccount";
         } else {
             model.addAttribute("user", user);
@@ -91,7 +97,7 @@ public class AdminController {
         }
 
         user = (User) session.getAttribute("user");
-        final String url = "http://localhost:8080/api/v1/admin/" + user.getUsername() + "/post/doctor";
+        final String url = adminUrl + user.getUsername() + "/post/doctor";
         Map<String, Object> requestBody = new LinkedHashMap<>();
         requestBody.put("specialization", specialization);
         Map<String, Object> userMap = new LinkedHashMap<>();
@@ -114,7 +120,7 @@ public class AdminController {
             return "redirect:/auth/login";
         }
 
-        final String url = "http://localhost:8080/api/v1/admin/" + user.getUsername() + "/post/schedule/bulk";
+        final String url = adminUrl + user.getUsername() + "/post/schedule/bulk";
         Doctor doctorSchedule = new Doctor();
         doctorSchedule.setId(id);
         response = responseService.getResponse(session, url, HttpMethod.POST, doctorSchedule);

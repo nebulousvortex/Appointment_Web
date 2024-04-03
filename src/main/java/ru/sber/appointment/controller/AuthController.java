@@ -1,5 +1,6 @@
 package ru.sber.appointment.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,10 @@ import java.util.List;
 @RequestMapping("/auth")
 public class AuthController {
 
+    @Value("${url.rest.auth.login}") private String loginUrl;
+
+    @Value("${url.rest.auth.registration}") private String regUrl;
+
     @GetMapping("/registration")
     public String register(){
         return ("registration");
@@ -27,8 +32,7 @@ public class AuthController {
     @PostMapping("/registration")
     public String register(@ModelAttribute User user, Model model){
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8080/api/v1/registration";
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, user, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(regUrl, user, String.class);
         if (responseEntity.getBody() != null) {
             List<String> errorsList = Arrays.asList(responseEntity.getBody().substring(1, responseEntity.getBody().length()-1).split(","));
             model.addAttribute("errorMessage", errorsList);
@@ -44,8 +48,7 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@ModelAttribute JwtRequest jwtRequest, Model model, HttpSession session){
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8080/api/v1/auth/login";
-        ResponseEntity<JwtResponse> responseEntity = restTemplate.postForEntity(url, jwtRequest, JwtResponse.class);
+        ResponseEntity<JwtResponse> responseEntity = restTemplate.postForEntity(loginUrl, jwtRequest, JwtResponse.class);
         JwtResponse jwtResponse = responseEntity.getBody();
         if (jwtResponse != null) {
             session.setAttribute("accessToken", jwtResponse.getAccessToken());
